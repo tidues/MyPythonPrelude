@@ -1,5 +1,5 @@
-import FPToolBox as fp
-import StringTools as st
+from . import FPToolBox as fp
+from . import StringTools as st
 
 # function that read data into double list
 def dataFormat(ffname, start_row=0, seps='\t'):

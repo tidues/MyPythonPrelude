@@ -1,4 +1,4 @@
-import FPToolBox as fp
+from . import FPToolBox as fp
 
 # split one of the char in
 def splitOneOf(s, seps, delEmpty=True):

@@ -1,6 +1,6 @@
-import lib.FPToolBox as fp
-import lib.FPToolBox as fp
-import lib.EasyWriter as ew
+from . import lib.FPToolBox as fp
+from . import lib.FPToolBox as fp
+from . import lib.EasyWriter as ew
 
 """ output a table from nested list input"""
 def tableStrFormat(lst, cSep='\t', rSep='\n'):
