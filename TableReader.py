@@ -1,12 +1,13 @@
-import lib.FPToolBox as fp
+import FPToolBox as fp
+import StringTools as st
 
 # function that read data into double list
-def dataFormat(ffname, start_row=0, sep='\t'):
+def dataFormat(ffname, start_row=0, seps='\t'):
     rf = open(ffname, 'r')
     lst = []
     for line in rf:
         line = line.strip()
-        lst.append(fp.lmap(strip, line.split(sep)))
+        lst.append(fp.lmap(strip, st.splitOneOf(line, seps)))
     rf.close()
     return lst
 
