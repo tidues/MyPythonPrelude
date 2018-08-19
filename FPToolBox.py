@@ -46,3 +46,9 @@ def zipWith3(f, alst, blst, clst):
 # (a -> bool) -> [a] -> [a]
 def filter(f, aLst):
     return [a for a in aLst if f(a)]
+
+
+# count number of items in list satisfy predicate
+def countIf(p, lst):
+    return len(filter(p, lst))
+
