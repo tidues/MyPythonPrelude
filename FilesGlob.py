@@ -1,4 +1,5 @@
 import os
+from natsort import natsorted, ns
 
 # basic filter function use prefix, surfix, and contains
 def prefix_filter(strs):
@@ -39,7 +40,8 @@ def trueFunc(x):
 
 
 # read the list of files
-def globFiles(rfolder, prefix='', surfix='', contained='', fullPath=True):
+# fullPath: 0: file names; 1: full paths; 2: both
+def globFiles(rfolder, prefix='', surfix='', contained='', fullPath=2):
     pfunc = prefix_filter(prefix)
     cfunc = contain_filter(contained)
     sfunc = surfix_filter(surfix)
@@ -47,11 +49,26 @@ def globFiles(rfolder, prefix='', surfix='', contained='', fullPath=True):
     def filter_func(x):
         return pfunc(x) and cfunc(x) and sfunc(x)
 
-    files = os.listdir(rfolder)
-    if fullPath:
-        fs = [rfolder+f for f in files if filter_func(f)]
+    # grab all file names
+    files = [f for f in os.listdir(rfolder) if filter_func(f)]
+
+    # natural sort all file names
+    files = natsorted(files, alg=ns.IGNORECASE)
+    print(files)
+
+    # output accrodingly
+    if fullPath == 0:
+        fs = files
+    elif fullPath == 1:
+        fs = [rfolder+f for f in files]
+    elif fullPath == 2:
+        fs = ([rfolder+f for f in files], files)
     else:
-        fs = [f for f in files if filter_func(f)]
+        try:
+            raise ValueError
+        except ValueError:
+            print('ValueError Exception: fullPath is ', fullPath)
+
     return fs
 
 
