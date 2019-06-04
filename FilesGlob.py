@@ -54,7 +54,6 @@ def globFiles(rfolder, prefix='', surfix='', contained='', fullPath=2):
 
     # natural sort all file names
     files = natsorted(files, alg=ns.IGNORECASE)
-    print(files)
 
     # output accrodingly
     if fullPath == 0:
