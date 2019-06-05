@@ -1,4 +1,17 @@
 
+# test if this is a integer or float number
+def isNumber(text):
+    tLst = text.split('.')
+
+    if len(tLst) > 2 or len(tLst) < 1:
+        return False
+
+    for t in tLst:
+        if t.isnumeric() is False:
+            return False
+
+    return True
+
 # modular a range of numbers into list
 def numberMod(rng, modulus):
     res = {}
