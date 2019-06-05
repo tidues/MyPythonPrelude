@@ -4,6 +4,8 @@ import os
 
 ### this data cleaner is mainly for data cleaning before reading the raw dataset, so do not use it for other data manipulations, which should be excuted in the latter phase of the project
 
+### speed bottle (guess): __readLine and __rowVerify
+
 # all row and column indexes start with 0
 class Cleaner:
     # header: the index of the header row, -1 if no header
@@ -13,7 +15,8 @@ class Cleaner:
     # log: the place to log all the unpassed data
     # seps: the separators for columns, can put multiple separators in a string
     # osep: the output file separator
-    def __init__(self, header=0, newCols=None, startRow=None, checkRow=None, log='./dcleaner.log', seps='\t', osep='\t'):
+    # strip: if strip each cell, will be slower if True
+    def __init__(self, header=0, newCols=None, startRow=None, checkRow=None, log='./logs/dcleaner.log', seps='\t', osep='\t', strip=False):
         self.header = header
         self.newCols = newCols
         if startRow is None:
@@ -31,6 +34,7 @@ class Cleaner:
         self.label2idx = {}
         self.idx2label = {}
         self.osep = osep
+        self.strip=strip
 
 
     # add verification rule for a column (by label or index)
@@ -56,14 +60,9 @@ class Cleaner:
         if log is None:
             log = self.log
 
-        # create folder if not exist
-        dirname = os.path.dirname(cleanfpath)
-        if not os.path.exists(dirname):
-            try:
-                os.makedirs(dirname)
-            except OSError as exc:
-                if exc.errno != errno.EEXIST:
-                    raise
+        # create paths if doesn't exit
+        self.__makepath(cleanfpath)
+        self.__makepath(log)
 
         # clean data
         with open(fpath, 'r', encoding=encoding, newline=newline, errors=errors) as rf, open(cleanfpath, 'w+') as wf, open(log, 'a+') as lf:
@@ -86,6 +85,18 @@ class Cleaner:
                     else:
                         errStr = fpath + '\t' + str(idx + 1) + '\t' + res[2] + '\t' + res[1] + '\n'
                         lf.write(errStr)
+
+
+    # create path
+    def __makepath(self, path):
+        # create folder if not exist
+        dirname = os.path.dirname(path)
+        if not os.path.exists(dirname):
+            try:
+                os.makedirs(dirname)
+            except OSError as exc:
+                if exc.errno != errno.EEXIST:
+                    raise
 
 
     # read headers
@@ -115,7 +126,8 @@ class Cleaner:
     # clean line
     def __readLine(self, line):
         valLst = st.splitOneOf(line, self.seps, delEmpty=False)
-        valLst = fp.lmap(lambda x: x.strip(), valLst)
+        if self.strip:
+            valLst = fp.lmap(lambda x: x.strip(), valLst)
         return self.__cleanCols(valLst)
 
 
@@ -140,13 +152,14 @@ class Cleaner:
         valLst = st.splitOneOf(row, self.seps, delEmpty=False)
 
         # strip whitespaces
-        valLst = fp.lmap(lambda x: x.strip(), valLst)
+        if self.strip:
+            valLst = fp.lmap(lambda x: x.strip(), valLst)
 
         # verify column rules
         if len(rules) > 0:
             for key in rules:
-                # if is an index
                 if not isinstance(key, int):
+                    # if is not an index
                     if key not in self.label2idx:
                         print('Warning: column lable ', key, ' is not in the headers')
                         continue
