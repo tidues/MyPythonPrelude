@@ -40,7 +40,7 @@ def trueFunc(x):
 
 
 # read the list of files
-# fullPath: 0: file names; 1: full paths; 2: both
+# fullPath: return info type: 0: file names; 1: full paths; 2: both
 def globFiles(rfolder, prefix='', surfix='', contained='', fullPath=2):
     pfunc = prefix_filter(prefix)
     cfunc = contain_filter(contained)
